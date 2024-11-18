@@ -102,17 +102,26 @@ body::before {
 
 .delivery-type {
     display: flex;
-    gap: 10px;
-    margin: 10px 0;
-    justify-content: flex-start; /* Ensures items are aligned from the start */
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
 }
 
 .delivery-type label {
     display: flex;
     align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    min-width: max-content; /* Ensures labels don't wrap */
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.delivery-type label:hover {
+    background: rgba(255,255,255,0.2);
 }
 
 .delivery-type input[type="radio"] {
@@ -126,6 +135,53 @@ body::before {
 
 #addressField.show {
     display: block;
+}
+
+.payment-type {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+}
+
+.payment-type h3 {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: var(--primary);
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.payment-type label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.payment-type label:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+#pixField {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    text-align: center;
+}
+
+#pixField p {
+    font-size: 1.1em;
+    color: var(--primary);
 }
 
 .menu-section {
@@ -304,6 +360,30 @@ body::before {
             <input type="text" id="userStreet" placeholder="Nome da Rua">
             <input type="text" id="userNeighborhood" placeholder="Bairro">
             <input type="text" id="userNumber" placeholder="Número da Casa">
+        </div>
+        <div class="payment-type">
+            <h3>Forma de Pagamento</h3>
+            <div class="payment-options">
+                <label>
+                    <input type="radio" name="paymentType" value="money" checked>
+                    Dinheiro
+                </label>
+                <label>
+                    <input type="radio" name="paymentType" value="debit">
+                    Cartão de Débito
+                </label>
+                <label>
+                    <input type="radio" name="paymentType" value="credit">
+                    Cartão de Crédito
+                </label>
+                <label>
+                    <input type="radio" name="paymentType" value="pix">
+                    PIX
+                </label>
+            </div>
+            <div id="pixField" style="display: none;">
+                <p>Chave PIX: 17992095122</p>
+            </div>
         </div>
     </div>
 
@@ -501,6 +581,13 @@ document.querySelectorAll('input[name="deliveryType"]').forEach(radio => {
     });
 });
 
+document.querySelectorAll('input[name="paymentType"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const pixField = document.getElementById('pixField');
+        pixField.style.display = this.value === 'pix' ? 'block' : 'none';
+    });
+});
+
 function checkout() {
     const name = document.getElementById('userName').value;
     const phone = document.getElementById('userPhone').value;
@@ -508,6 +595,7 @@ function checkout() {
     const street = document.getElementById('userStreet').value;
     const neighborhood = document.getElementById('userNeighborhood').value;
     const number = document.getElementById('userNumber').value;
+    const paymentType = document.querySelector('input[name="paymentType"]:checked').value;
 
     if (!name || !phone) {
         alert('Por favor, preencha seu nome e telefone antes de finalizar o pedido.');
@@ -529,6 +617,13 @@ function checkout() {
     if (deliveryType === 'delivery') {
         message += `Endereço: ${street}, ${number} - ${neighborhood}\n`;
     }
+    message += `\nForma de Pagamento: ${
+        paymentType === 'money' ? 'Dinheiro' :
+        paymentType === 'debit' ? 'Cartão de Débito' :
+        paymentType === 'credit' ? 'Cartão de Crédito' :
+        'PIX'
+    }\n`;
+    
     message += `\nPedido:\n`;
     
     let total = 0;
