@@ -856,7 +856,9 @@
         if (paymentType === 'money') {
             const changeAmount = document.getElementById('changeAmount').value;
             if (changeAmount) {
+                const change = calculateChange(total, parseFloat(changeAmount));
                 message += `*Troco para:* R$ ${parseFloat(changeAmount).toFixed(2)}\n`;
+                message += `*Troco a devolver:* R$ ${change.toFixed(2)}\n`;
             }
         }
         
