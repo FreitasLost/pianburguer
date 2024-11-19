@@ -379,7 +379,7 @@
     </head>
     <body>
     <div class="header">
-        <h1>Pian Burguer</h1>
+        <h1>Delivery</h1>
     </div>
     
     <div class="container">
@@ -408,16 +408,16 @@
                 <h3 style="color: white;">Forma de Pagamento</h3>
                 <div class="payment-options">
                     <label>
-                        <input type="radio" name="paymentType" value="money" checked="">
-                        Dinheiro
-                    </label>
-                    <label>
-                        <input type="radio" name="paymentType" value="debit">
+                        <input type="radio" name="paymentType" value="debit" checked>
                         Débito
                     </label>
                     <label>
                         <input type="radio" name="paymentType" value="credit">
                         Crédito
+                    </label>
+                    <label>
+                        <input type="radio" name="paymentType" value="money">
+                        Dinheiro
                     </label>
                     <label>
                         <input type="radio" name="paymentType" value="pix">
@@ -719,6 +719,36 @@
         }
     
         cartTotal.innerHTML = `Total: R$ ${total.toFixed(2)}`;
+        
+        // Trigger change recalculation
+        const changeAmount = document.getElementById('changeAmount');
+        if (changeAmount && changeAmount.value) {
+            updateChangeDisplay(total);
+        }
+    }
+    
+    function updateChangeDisplay(cartTotal) {
+        const changeAmount = document.getElementById('changeAmount');
+        const amountGiven = parseFloat(changeAmount.value) || 0;
+        const change = calculateChange(cartTotal, amountGiven);
+        
+        // Remove existing change display if any
+        const existingDisplay = document.getElementById('changeDisplay');
+        if (existingDisplay) {
+            existingDisplay.remove();
+        }
+        
+        // Create new change display
+        const changeDisplay = document.createElement('div');
+        changeDisplay.id = 'changeDisplay';
+        
+        if (change !== null) {
+            changeDisplay.innerHTML = `<p style="color: white; margin-top: 10px;">Troco: R$ ${change.toFixed(2)}</p>`;
+        } else {
+            changeDisplay.innerHTML = `<p style="color: #ff0000; margin-top: 10px;">Valor insuficiente</p>`;
+        }
+        
+        changeAmount.parentElement.appendChild(changeDisplay);
     }
     
     function removeFromCart(index) {
@@ -764,25 +794,7 @@
             return sum + itemTotal;
         }, 0) + deliveryFee;
 
-        const amountGiven = parseFloat(this.value) || 0;
-        const change = calculateChange(cartTotal, amountGiven);
-        
-        const changeDisplay = document.createElement('div');
-        changeDisplay.id = 'changeDisplay';
-        
-        // Remove existing change display if any
-        const existingDisplay = document.getElementById('changeDisplay');
-        if (existingDisplay) {
-            existingDisplay.remove();
-        }
-        
-        if (change !== null) {
-            changeDisplay.innerHTML = `<p style="color: white; margin-top: 10px;">Troco: R$ ${change.toFixed(2)}</p>`;
-        } else {
-            changeDisplay.innerHTML = `<p style="color: #ff0000; margin-top: 10px;">Valor insuficiente</p>`;
-        }
-        
-        this.parentElement.appendChild(changeDisplay);
+        updateChangeDisplay(cartTotal);
     });
     
     function checkout() {
