@@ -475,6 +475,8 @@
     </div>
     
     <script>
+    let orderCounter = parseInt(localStorage.getItem('orderCounter') || '0');
+
     const storeHours = {
         0: { open: '18:00', close: '23:00' }, // domingo
         1: { open: '18:00', close: '23:00' }, // segunda
@@ -803,6 +805,10 @@
             return;
         }
         
+        // Increment order counter
+        orderCounter++;
+        localStorage.setItem('orderCounter', orderCounter);
+        
         const name = document.getElementById('userName').value;
         const phone = document.getElementById('userPhone').value;
         const deliveryType = document.querySelector('input[name="deliveryType"]:checked').value;
@@ -826,7 +832,8 @@
         const dateStr = now.toLocaleDateString();
         const timeStr = now.toLocaleTimeString();
     
-        let message = `🔔 *Pedido* (${dateStr} - ${timeStr})\n`;
+        // Add order number to the message
+        let message = `🔔 *Pedido #${orderCounter}* (${dateStr} - ${timeStr})\n`;
         message += `------------------------\n`;
         
         let subTotal = 0;
