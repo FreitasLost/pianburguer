@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><base href="/">
+<html><head><base href="/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pian Burguer</title>
@@ -50,6 +50,7 @@
     
     .nav-buttons {
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         justify-content: center;
         margin-top: 10px;
@@ -64,6 +65,7 @@
         cursor: pointer;
         font-size: 14px;
         transition: background 0.3s ease;
+        min-width: 80px;
     }
     
     .nav-button:hover {
@@ -348,6 +350,19 @@
     }
     
     @media (max-width: 480px) {
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 0 10px;
+        }
+        
+        .nav-button {
+            width: 100%;
+            font-size: 13px;
+            padding: 8px 4px;
+        }
+        
         .cart {
             padding: 10px;
         }
