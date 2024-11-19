@@ -1,10 +1,10 @@
-<html><head><base href="/">
+<!DOCTYPE html><html><head><base href="/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pian Burguer</title>
     <style>
     :root {
-        --primary: #ff6b01;
+        --primary: #ff0000; /* Changed from #ff6b01 to #ff0000 (red) */
         --secondary: #1a1a1a;
     }
     
@@ -77,7 +77,7 @@
     .user-info {
         margin-bottom: 15px;
         padding: 15px;
-        background-color: rgba(255, 107, 1, 0.1);
+        background-color: rgba(255, 0, 0, 0.1);
         border-radius: 8px;
     }
     
@@ -218,7 +218,7 @@
     }
     
     .menu-item {
-        background-color: rgba(255, 107, 1, 0.1);
+        background-color: rgba(255, 0, 0, 0.1);
         padding: 12px;
         border-radius: 8px;
     }
@@ -337,6 +337,16 @@
         font-weight: bold;
     }
     
+    .store-status {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    
+    button:disabled {
+        cursor: not-allowed !important;
+    }
+    
     @media (max-width: 480px) {
         .cart {
             padding: 10px;
@@ -380,10 +390,10 @@
                 <input type="text" id="userNumber" placeholder="Número da Casa">
             </div>
             <div class="payment-type">
-                <h3>Forma de Pagamento</h3>
+                <h3 style="color: white;">Forma de Pagamento</h3>
                 <div class="payment-options">
                     <label>
-                        <input type="radio" name="paymentType" value="money" checked>
+                        <input type="radio" name="paymentType" value="money" checked="">
                         Dinheiro
                     </label>
                     <label>
@@ -400,7 +410,7 @@
                     </label>
                 </div>
                 <div id="pixField" style="display: none;">
-                    <p>Chave PIX: 17992095122</p>
+                    <p style="color: white;">Chave PIX: 17992095122</p>
                 </div>
                 <div id="changeField" style="display: none;">
                     <input type="number" id="changeAmount" placeholder="Troco Para Quanto?">
@@ -409,9 +419,11 @@
         </div>
     
         <div class="nav-buttons" style="margin: 20px 0;">
-            <button class="nav-button" onclick="scrollToSection('sandwiches-section')">Hambúrguers</button>
-            <button class="nav-button" onclick="scrollToSection('hotdogs-section')">Cachorro Quente</button>
+            <button class="nav-button" onclick="scrollToSection('sandwiches-section')">Hamburguer</button>
+            <button class="nav-button" onclick="scrollToSection('hotdogs-section')">Hotdog</button>
             <button class="nav-button" onclick="scrollToSection('drinks-section')">Bebidas</button>
+            <button class="nav-button" onclick="scrollToSection('juices-section')">Sucos</button>
+            <button class="nav-button" onclick="scrollToSection('portions-section')">Porções</button>
         </div>
     
         <div class="menu-section" id="sandwiches-section">
@@ -428,6 +440,16 @@
             <h2>Bebidas</h2>
             <div class="menu-grid" id="drinks"></div>
         </div>
+
+        <div class="menu-section" id="juices-section">
+            <h2>Sucos</h2>
+            <div class="menu-grid" id="juices"></div>
+        </div>
+
+        <div class="menu-section" id="portions-section">
+            <h2>Porções</h2>
+            <div class="menu-grid" id="portions"></div>
+        </div>
     </div>
     
     <div class="cart" id="cart">
@@ -438,6 +460,83 @@
     </div>
     
     <script>
+    const storeHours = {
+        0: { open: '18:00', close: '21:00' }, // Sunday
+        1: { open: '18:00', close: '21:00' }, // Monday
+        2: { open: '18:00', close: '21:00' }, // Tuesday
+        3: { open: '18:00', close: '21:00' }, // Wednesday
+        4: { open: '18:00', close: '21:00' }, // Thursday
+        5: { open: '18:00', close: '21:00' }, // Friday
+        6: { open: '18:00', close: '21:00' }  // Saturday
+    };
+
+    function isStoreOpen() {
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const currentTime = now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+        
+        // Get schedule for current day
+        const todaySchedule = storeHours[dayOfWeek];
+        
+        // Convert times to comparable values
+        const nowMinutes = (now.getHours() * 60) + now.getMinutes();
+        const openMinutes = parseInt(todaySchedule.open.split(':')[0]) * 60 + parseInt(todaySchedule.open.split(':')[1]);
+        const closeMinutes = parseInt(todaySchedule.close.split(':')[0]) * 60 + parseInt(todaySchedule.close.split(':')[1]);
+        
+        return nowMinutes >= openMinutes && nowMinutes <= closeMinutes;
+    }
+
+    function updateStoreStatus() {
+        const header = document.querySelector('.header');
+        const checkoutBtn = document.querySelector('.checkout-btn');
+        const addToCartBtns = document.querySelectorAll('.add-to-cart');
+        
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const todaySchedule = storeHours[dayOfWeek];
+        
+        const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        const today = daysOfWeek[dayOfWeek];
+        
+        if (!isStoreOpen()) {
+            // Add store closed message if not already present
+            if (!document.querySelector('.store-status')) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'store-status';
+                statusDiv.innerHTML = `
+                    <span style="color: white; background: #ff0000; padding: 5px 10px; border-radius: 4px; margin-top: 10px; display: inline-block;">
+                        FECHADO - Hoje (${today}) abriremos às ${todaySchedule.open}
+                    </span>
+                `;
+                header.appendChild(statusDiv);
+            }
+            
+            // Disable checkout and add to cart buttons
+            checkoutBtn.disabled = true;
+            checkoutBtn.style.opacity = '0.5';
+            addToCartBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            });
+        } else {
+            // Remove store closed message if present
+            const statusDiv = document.querySelector('.store-status');
+            if (statusDiv) statusDiv.remove();
+            
+            // Enable checkout and add to cart buttons
+            checkoutBtn.disabled = false;
+            checkoutBtn.style.opacity = '1';
+            addToCartBtns.forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+        }
+    }
+
+    // Add this to the end of the displayMenuItems function
+    setInterval(updateStoreStatus, 60000); // Check every minute
+    updateStoreStatus(); // Initial check
+
     const addOns = [
         { name: "Bacon Extra", price: 7.00 },
         { name: "Queijo Extra", price: 4.00 },
@@ -469,6 +568,18 @@
             { name: "Hot Dog Simples", price: 12.00, description: "Salsicha, tomate, batata palha, milho e ervilha" },
             { name: "Hot Dog Completo", price: 15.00, description: "Salsicha, tomate, batata palha, milho, ervilha, bacon e catupiry" },
             { name: "Hot Dog Duplo", price: 18.00, description: "2 Salsichas, tomate, batata palha, milho, ervilha e catupiry" }
+        ],
+        juices: [
+            { name: "Suco de Laranja", price: 8.00, description: "Natural, 500ml" },
+            { name: "Suco de Abacaxi", price: 8.00, description: "Natural, 500ml" },
+            { name: "Suco de Maracujá", price: 8.00, description: "Natural, 500ml" },
+            { name: "Suco de Morango", price: 9.00, description: "Natural, 500ml" }
+        ],
+        portions: [
+            { name: "Batata Frita", price: 25.00, description: "Porção grande com cheddar e bacon" },
+            { name: "Calabresa Acebolada", price: 30.00, description: "Porção grande" },
+            { name: "Frango a Passarinho", price: 35.00, description: "500g" },
+            { name: "Mandioca Frita", price: 25.00, description: "Porção grande" }
         ]
     };
     
@@ -479,6 +590,8 @@
         const sandwichesContainer = document.getElementById('sandwiches');
         const drinksContainer = document.getElementById('drinks');
         const hotdogsContainer = document.getElementById('hotdogs');
+        const juicesContainer = document.getElementById('juices');
+        const portionsContainer = document.getElementById('portions');
     
         menuItems.sandwiches.forEach(item => {
             sandwichesContainer.innerHTML += createMenuItem(item);
@@ -490,6 +603,14 @@
     
         menuItems.hotdogs.forEach(item => {
             hotdogsContainer.innerHTML += createMenuItem(item);
+        });
+
+        menuItems.juices.forEach(item => {
+            juicesContainer.innerHTML += createMenuItem(item);
+        });
+
+        menuItems.portions.forEach(item => {
+            portionsContainer.innerHTML += createMenuItem(item);
         });
     }
     
@@ -613,6 +734,11 @@
     });
     
     function checkout() {
+        if (!isStoreOpen()) {
+            alert(`Estamos fechados no momento!\nHorário de funcionamento: ${storeHours[dayOfWeek].open} às ${storeHours[dayOfWeek].close}`);
+            return;
+        }
+        
         const name = document.getElementById('userName').value;
         const phone = document.getElementById('userPhone').value;
         const deliveryType = document.querySelector('input[name="deliveryType"]:checked').value;
