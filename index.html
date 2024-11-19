@@ -814,7 +814,7 @@
         const dateStr = now.toLocaleDateString();
         const timeStr = now.toLocaleTimeString();
     
-        let message = `*Pedido* (${dateStr} - ${timeStr})\n`;
+        let message = `🔔 *Pedido* (${dateStr} - ${timeStr})\n`;
         message += `------------------------\n`;
         
         let subTotal = 0;
@@ -872,8 +872,8 @@
         if (deliveryType === 'delivery') {
             message += `*Endereço:* ${street}, ${number} - ${neighborhood}\n`;
         }
-        message += `\n*Cliente:* ${name}\n`;
-        message += `*Telefone:* ${phone}`;
+        message += `\n👤 *Cliente:* ${name}\n`;
+        message += `📲 *Telefone:* ${phone}`;
         
         const encodedMessage = encodeURIComponent(message);
         window.open(`https://wa.me/5517992095122?text=${encodedMessage}`);
