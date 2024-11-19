@@ -741,6 +741,13 @@ function updateStoreStatus() {
     }
 }
 
+// Load initial store status
+const savedStatus = localStorage.getItem('storeStatus');
+if (savedStatus) {
+    isStoreOpen = savedStatus === 'open';
+}
+updateStoreStatus();
+
 function toggleStoreStatus() {
     isStoreOpen = !isStoreOpen;
     updateStoreStatus();
@@ -780,13 +787,7 @@ document.getElementById('adminModal').addEventListener('click', (e) => {
     }
 });
 
-// Load initial store status
-const savedStatus = localStorage.getItem('storeStatus');
-if (savedStatus) {
-    isStoreOpen = savedStatus === 'open';
-}
-updateStoreStatus();
-
+// Update checkout function to check store status
 function checkout() {
     if (!isStoreOpen) {
         alert('Desculpe, estamos fechados no momento!');
