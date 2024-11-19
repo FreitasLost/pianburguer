@@ -475,16 +475,47 @@
     </div>
     
     <script>
-    let orderCounter = parseInt(localStorage.getItem('orderCounter') || '0');
+    let orderCounter = 0;
+
+    async function loadOrderCounter() {
+        try {
+            const response = await fetch('/orderCounter.txt');
+            if (response.ok) {
+                const count = await response.text();
+                orderCounter = parseInt(count) || 0;
+            }
+        } catch (error) {
+            console.log('Could not load counter, starting from 0');
+            orderCounter = 0;
+        }
+    }
+
+    async function saveOrderCounter() {
+        try {
+            const response = await fetch('/saveCounter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ counter: orderCounter })
+            });
+            
+            if (!response.ok) {
+                console.error('Failed to save counter');
+            }
+        } catch (error) {
+            console.error('Error saving counter:', error);
+        }
+    }
 
     const storeHours = {
         0: { open: '18:00', close: '23:00' }, // domingo
         1: { open: '18:00', close: '23:59' }, // segunda
-        2: { open: '00:00', close: '01:00' }, // terça
-        3: { open: '18:00', close: '01:00' }, // quarta
-        4: { open: '18:00', close: '01:00' }, // quinta
-        5: { open: '18:00', close: '01:00' }, // sexta
-        6: { open: '18:00', close: '01:00' }  // sabado
+        2: { open: '00:01', close: '21:00' }, // terça
+        3: { open: '18:00', close: '21:00' }, // quarta
+        4: { open: '18:00', close: '21:00' }, // quinta
+        5: { open: '18:00', close: '21:00' }, // sexta
+        6: { open: '18:00', close: '21:00' }  // sabado
     };
 
     function isStoreOpen() {
@@ -805,9 +836,9 @@
             return;
         }
         
-        // Increment order counter
+        // Increment order counter and save
         orderCounter++;
-        localStorage.setItem('orderCounter', orderCounter);
+        saveOrderCounter();
         
         const name = document.getElementById('userName').value;
         const phone = document.getElementById('userPhone').value;
@@ -911,6 +942,7 @@
     }
     
     displayMenuItems();
+    document.addEventListener('DOMContentLoaded', loadOrderCounter);
     </script>
     
     </body></html>
