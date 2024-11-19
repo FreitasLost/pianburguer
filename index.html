@@ -476,13 +476,13 @@
     
     <script>
     const storeHours = {
-        0: { open: '18:00', close: '21:00' }, // Sunday
-        1: { open: '18:00', close: '21:00' }, // Monday
-        2: { open: '18:00', close: '21:00' }, // Tuesday
-        3: { open: '18:00', close: '21:00' }, // Wednesday
-        4: { open: '18:00', close: '21:00' }, // Thursday
-        5: { open: '18:00', close: '21:00' }, // Friday
-        6: { open: '18:00', close: '21:00' }  // Saturday
+        0: { open: '18:00', close: '23:00' }, // domingo
+        1: { open: '18:00', close: '23:00' }, // segunda
+        2: { open: '18:00', close: '21:00' }, // terça
+        3: { open: '18:00', close: '21:00' }, // quarta
+        4: { open: '18:00', close: '21:00' }, // quinta
+        5: { open: '18:00', close: '21:00' }, // sexta
+        6: { open: '18:00', close: '21:00' }  // sabado
     };
 
     function isStoreOpen() {
@@ -746,6 +746,43 @@
             pixField.style.display = this.value === 'pix' ? 'block' : 'none';
             changeField.style.display = this.value === 'money' ? 'block' : 'none';
         });
+    });
+    
+    function calculateChange(total, amountGiven) {
+        if (amountGiven < total) {
+            return null;
+        }
+        return amountGiven - total;
+    }
+
+    document.getElementById('changeAmount').addEventListener('input', function() {
+        const cartTotal = cart.reduce((sum, item) => {
+            let itemTotal = item.price;
+            if (item.addons) {
+                itemTotal += item.addons.reduce((addonSum, addon) => addonSum + addon.price, 0);
+            }
+            return sum + itemTotal;
+        }, 0) + deliveryFee;
+
+        const amountGiven = parseFloat(this.value) || 0;
+        const change = calculateChange(cartTotal, amountGiven);
+        
+        const changeDisplay = document.createElement('div');
+        changeDisplay.id = 'changeDisplay';
+        
+        // Remove existing change display if any
+        const existingDisplay = document.getElementById('changeDisplay');
+        if (existingDisplay) {
+            existingDisplay.remove();
+        }
+        
+        if (change !== null) {
+            changeDisplay.innerHTML = `<p style="color: white; margin-top: 10px;">Troco: R$ ${change.toFixed(2)}</p>`;
+        } else {
+            changeDisplay.innerHTML = `<p style="color: #ff0000; margin-top: 10px;">Valor insuficiente</p>`;
+        }
+        
+        this.parentElement.appendChild(changeDisplay);
     });
     
     function checkout() {
