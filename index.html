@@ -1,7 +1,11 @@
 <html><head><base href="/">
+
+    <!-- Add Font Awesome CDN in the <head> section -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lu Lanches e Big Dog</title>
+    <title>Pian Burguer</title>
     <style>
     :root {
         --primary: #ff0000; /* Changed from #ff6b01 to #ff0000 (red) */
@@ -145,6 +149,7 @@
         background: rgba(255,255,255,0.1);
         border-radius: 6px;
         transition: background 0.3s ease;
+        min-width: 80px;
     }
     
     .delivery-type label:hover {
@@ -178,19 +183,22 @@
     }
     
     .payment-options {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        display: flex;
+        flex-wrap: wrap;
         gap: 10px;
+        justify-content: flex-start;  /* Updated to flex */
     }
     
     .payment-type label {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 12px;
+        padding: 8px 16px;  /* Reduced padding */
         background: rgba(255,255,255,0.1);
         border-radius: 6px;
         transition: background 0.3s ease;
+        font-size: 14px;  /* Match font size with delivery type */
+        min-width: 80px;  /* Add minimum width */
     }
     
     .payment-type label:hover {
@@ -400,13 +408,23 @@
             font-size: 0.9rem;
         }
     }
+
+    /* Add some CSS to style the phone icons */
+    .header .fa-phone {
+        color: white;
+        margin-right: 5px;
+    }
     </style>
     </head>
     <body>
     <div class="header">
         <div>
-            <h1>Lu Lanches e Big Dog</h1>
+            <h1>Delivery</h1>
             <p style="font-size: 0.8rem; margin-top: 5px;">Nos Encontre: Pc Padre Paulo Lepick, 187 - Centro (Novo Horizonte, SP)</p>
+            <p style="font-size: 0.8rem; margin-top: 5px;">
+                <i class="fas fa-phone"></i> (17)997771913 &nbsp;&nbsp; 
+                <i class="fas fa-phone"></i> (17)99777-1913
+            </p>
         </div>
         <div class="status-box open">ABERTO</div>
     </div>
@@ -425,7 +443,7 @@
                 </label>
                 <label style="display: flex; align-items: center; gap: 5px;">
                     <input type="radio" name="deliveryType" value="dineIn">
-                    Comer No Local
+                    Mesa
                 </label>
             </div>
             <div id="addressField">
@@ -783,30 +801,6 @@
         if (changeAmount && changeAmount.value) {
             updateChangeDisplay(total);
         }
-    }
-    
-    function updateChangeDisplay(cartTotal) {
-        const changeAmount = document.getElementById('changeAmount');
-        const amountGiven = parseFloat(changeAmount.value) || 0;
-        const change = calculateChange(cartTotal, amountGiven);
-        
-        // Remove existing change display if any
-        const existingDisplay = document.getElementById('changeDisplay');
-        if (existingDisplay) {
-            existingDisplay.remove();
-        }
-        
-        // Create new change display
-        const changeDisplay = document.createElement('div');
-        changeDisplay.id = 'changeDisplay';
-        
-        if (change !== null) {
-            changeDisplay.innerHTML = `<p style="color: white; margin-top: 10px;">Troco: R$ ${change.toFixed(2)}</p>`;
-        } else {
-            changeDisplay.innerHTML = `<p style="color: #ff0000; margin-top: 10px;">Valor insuficiente</p>`;
-        }
-        
-        changeAmount.parentElement.appendChild(changeDisplay);
     }
     
     function removeFromCart(index) {
