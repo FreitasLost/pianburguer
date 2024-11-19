@@ -36,16 +36,41 @@
     }
     
     .header {
+        display: flex;
+        justify-content: space-between; /* Changed from center to space-between */
+        align-items: center;
+        gap: 10px;
         background-color: var(--primary);
         padding: 15px;
-        text-align: center;
         position: sticky;
         top: 0;
         z-index: 100;
     }
     
+    .header > div:first-child {
+        flex: 1;
+    }
+
     .header h1 {
         font-size: 1.5rem;
+        margin: 0;
+    }
+
+    .status-box {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .status-box.open {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .status-box.closed {
+        background-color: #dc3545;
+        color: white;
     }
     
     .nav-buttons {
@@ -379,7 +404,11 @@
     </head>
     <body>
     <div class="header">
-        <h1>Delivery</h1>
+        <div>
+            <h1>Delivery</h1>
+            <p style="font-size: 0.8rem; margin-top: 5px;">Nos Encontre: Pc Padre Paulo Lepick, 187 - Centro (Novo Horizonte, SP)</p>
+        </div>
+        <div class="status-box open">ABERTO</div>
     </div>
     
     <div class="container">
@@ -510,8 +539,8 @@
 
     const storeHours = {
         0: { open: '18:00', close: '23:00' }, // domingo
-        1: { open: '18:00', close: '23:59' }, // segunda
-        2: { open: '00:01', close: '21:00' }, // terça
+        1: { open: '18:00', close: '23:00' }, // segunda
+        2: { open: '18:00', close: '21:00' }, // terça
         3: { open: '18:00', close: '21:00' }, // quarta
         4: { open: '18:00', close: '21:00' }, // quinta
         5: { open: '18:00', close: '21:00' }, // sexta
@@ -545,20 +574,20 @@
         
         const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
         const today = daysOfWeek[dayOfWeek];
+
+        // Remove existing status elements
+        const existingStatus = header.querySelector('.status-box');
+        if (existingStatus) {
+            existingStatus.remove();
+        }
+        
+        // Create new status box
+        const statusBox = document.createElement('div');
+        statusBox.className = `status-box ${isStoreOpen() ? 'open' : 'closed'}`;
+        statusBox.textContent = isStoreOpen() ? 'ABERTO' : 'FECHADO';
+        header.appendChild(statusBox);
         
         if (!isStoreOpen()) {
-            // Add store closed message if not already present
-            if (!document.querySelector('.store-status')) {
-                const statusDiv = document.createElement('div');
-                statusDiv.className = 'store-status';
-                statusDiv.innerHTML = `
-                    <span style="color: white; background: #ff0000; padding: 5px 10px; border-radius: 4px; margin-top: 10px; display: inline-block;">
-                        FECHADO - Hoje (${today}) abriremos às ${todaySchedule.open}
-                    </span>
-                `;
-                header.appendChild(statusDiv);
-            }
-            
             // Disable checkout and add to cart buttons
             checkoutBtn.disabled = true;
             checkoutBtn.style.opacity = '0.5';
@@ -567,10 +596,6 @@
                 btn.style.opacity = '0.5';
             });
         } else {
-            // Remove store closed message if present
-            const statusDiv = document.querySelector('.store-status');
-            if (statusDiv) statusDiv.remove();
-            
             // Enable checkout and add to cart buttons
             checkoutBtn.disabled = false;
             checkoutBtn.style.opacity = '1';
