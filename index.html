@@ -486,6 +486,7 @@
             <button class="nav-button" onclick="scrollToSection('drinks-section')">Bebidas</button>
             <button class="nav-button" onclick="scrollToSection('juices-section')">Sucos</button>
             <button class="nav-button" onclick="scrollToSection('portions-section')">Porções</button>
+            <button class="nav-button" onclick="scrollToSection('beef-section')">Carne de Vaca</button>
         </div>
     
         <div class="menu-section" id="sandwiches-section">
@@ -511,6 +512,11 @@
         <div class="menu-section" id="portions-section">
             <h2>Porções</h2>
             <div class="menu-grid" id="portions"></div>
+        </div>
+
+        <div class="menu-section" id="beef-section">
+            <h2>Carne de Vaca</h2>
+            <div class="menu-grid" id="beef"></div>
         </div>
     </div>
     
@@ -671,6 +677,12 @@
             { name: "Calabresa Acebolada", price: 30.00, description: "Porção grande" },
             { name: "Frango a Passarinho", price: 35.00, description: "500g" },
             { name: "Mandioca Frita", price: 25.00, description: "Porção grande" }
+        ],
+        beef: [
+            { name: "Contra Filé", price: 45.00, description: "Grelhado com arroz e fritas" },
+            { name: "Picanha", price: 55.00, description: "Grelhada com arroz e fritas" },
+            { name: "Maminha", price: 48.00, description: "Grelhada com arroz e fritas" },
+            { name: "Alcatra", price: 45.00, description: "Grelhada com arroz e fritas" }
         ]
     };
     
@@ -683,6 +695,7 @@
         const hotdogsContainer = document.getElementById('hotdogs');
         const juicesContainer = document.getElementById('juices');
         const portionsContainer = document.getElementById('portions');
+        const beefContainer = document.getElementById('beef');
     
         menuItems.sandwiches.forEach(item => {
             sandwichesContainer.innerHTML += createMenuItem(item);
@@ -702,6 +715,10 @@
 
         menuItems.portions.forEach(item => {
             portionsContainer.innerHTML += createMenuItem(item);
+        });
+
+        menuItems.beef.forEach(item => {
+            beefContainer.innerHTML += createMenuItem(item);
         });
     }
     
