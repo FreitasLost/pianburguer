@@ -478,13 +478,13 @@
     let orderCounter = parseInt(localStorage.getItem('orderCounter') || '0');
 
     const storeHours = {
-        0: { open: '18:00', close: '23:00' }, // domingo
-        1: { open: '18:00', close: '23:00' }, // segunda
-        2: { open: '18:00', close: '21:00' }, // terça
-        3: { open: '18:00', close: '21:00' }, // quarta
-        4: { open: '18:00', close: '21:00' }, // quinta
-        5: { open: '18:00', close: '21:00' }, // sexta
-        6: { open: '18:00', close: '21:00' }  // sabado
+        0: { open: '18:00', close: '01:00' }, // domingo
+        1: { open: '18:00', close: '01:00' }, // segunda
+        2: { open: '18:00', close: '01:00' }, // terça
+        3: { open: '18:00', close: '01:00' }, // quarta
+        4: { open: '18:00', close: '01:00' }, // quinta
+        5: { open: '18:00', close: '01:00' }, // sexta
+        6: { open: '18:00', close: '01:00' }  // sabado
     };
 
     function isStoreOpen() {
